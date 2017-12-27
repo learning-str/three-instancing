@@ -30,15 +30,15 @@ export default class ParticleTex {
     this.size_ = size;
     // this.bufCamera_ = new THREE.OrthographicCamera(size.width / 2,
     //     size.width / -2, size.height / 2, size.height / -2, 1, 2000);
-    const FOV = 60;
-    const ASPECT = size.width / size.height;
-    const NEAR = 1;
-    const FAR = 1000;
-    this.bufCamera_ = new THREE.PerspectiveCamera(FOV, ASPECT, NEAR, FAR);
-    this.bufCamera_.position.set(0, 0, 50);
+    // const FOV = 60;
+    // const ASPECT = size.width / size.height;
+    // const NEAR = 1;
+    // const FAR = 1000;
+    // this.bufCamera_ = new THREE.PerspectiveCamera(FOV, ASPECT, NEAR, FAR);
+    // this.bufCamera_.position.set(0, 0, 50);
     // this.bufCamera_.position.set(0, 0, 1000);
     // CAMERA.lookAt(SCENE.position);
-
+    this.bufCamera_ = new THREE.Camera();
     this.bufScene_ = new THREE.Scene();
     this.renderTarget_ = new THREE.WebGLRenderTarget(size.width, size.height,
       {
@@ -79,6 +79,7 @@ export default class ParticleTex {
     points.matrixAutoUpdate  = true;
     // this.bufScene_ = new THREE.Scene();
     this.bufScene_.add(points);
+    console.log("done");
   }
 
   render(renderer) {

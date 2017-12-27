@@ -25,8 +25,6 @@
 //  sell anything that it may describe, in whole or in part.
 //
 
-// import DrawingTex from './module/drawing-tex.js';
-// import ForceTex from './module/force-tex.js';
 import ParticleTex from './module/particle-tex.js';
 import TextTex from './module/text-tex.js';
 
@@ -52,7 +50,7 @@ function setup() {
   PARTICLE_TEX.setup();
   // TEXT_TEX.setup();
   const geometry = new THREE.PlaneGeometry(SIZE.width, SIZE.height);
-  const material = new THREE.MeshBasicMaterial();
+  // const material = new THREE.MeshBasicMaterial({map: PARTICLE_TEX.texture});
   MATERIAL.map = PARTICLE_TEX.texture;
 
   const mesh = new THREE.Mesh(geometry, MATERIAL);
@@ -65,81 +63,3 @@ function draw() {
   RENDERER.render(SCENE, CAMERA);
   requestAnimationFrame(draw);
 }
-
-// const PARTICLE_TEX_SIZE = 512;
-// const CANVAS_WIDTH = 750;
-// const CANVAS_HEIGHT = 750;
-// let START_MILLIS;
-//
-// // scene
-// const SCENE = new THREE.Scene();
-//
-// // camera
-// const FOV = 60;
-// const ASPECT = CANVAS_WIDTH / CANVAS_HEIGHT;
-// const NEAR = 1;
-// const FAR = 1000;
-// const CAMERA = new THREE.PerspectiveCamera(FOV, ASPECT, NEAR, FAR);
-// CAMERA.position.set(0, 0, 50);
-//
-// // renderer
-// const RENDERER = new THREE.WebGLRenderer();
-// RENDERER.setSize(CANVAS_WIDTH, CANVAS_HEIGHT);
-// RENDERER.setClearColor(0xffffff, 1);
-// document.body.appendChild(RENDERER.domElement);
-//
-// let BOX_MESH;
-//
-// // fbo
-// const FORCE_TEX = new ForceTex(PARTICLE_TEX_SIZE);
-// const PARTICLE_TEX = new ParticleTex(CAMERA, RENDERER, PARTICLE_TEX_SIZE);
-// const DRAWING_TEX = new DrawingTex(CAMERA, RENDERER, PARTICLE_TEX_SIZE,
-//                                    CANVAS_WIDTH, CANVAS_HEIGHT);
-//
-// setup();
-// setTimeout(function() {draw()} ,300);
-//
-// function setup() {
-//   FORCE_TEX.setup();
-//   PARTICLE_TEX.setup(FORCE_TEX.texture, PARTICLE_TEX_SIZE);
-//   DRAWING_TEX.setup(PARTICLE_TEX.texture);
-//
-//   const geometry = new THREE.CubeGeometry(30, 30, 30);
-//   const material = new THREE.MeshBasicMaterial({map: DRAWING_TEX.texture});
-//   BOX_MESH = new THREE.Mesh(geometry, material);
-//   SCENE.add(BOX_MESH);
-//   START_MILLIS = new Date().getTime();
-// }
-//
-// let NEXT_MILLIS = 2000;
-// function draw() {
-//   BOX_MESH.rotation.x += 0.001;
-//   BOX_MESH.rotation.y += 0.001;
-//
-//   const ellapsedMillis = new Date().getTime() - START_MILLIS;
-//   let changedFlag = false;
-//   if (ellapsedMillis > NEXT_MILLIS && DRAWING_TEX.particleNum < 100000) {
-//     DRAWING_TEX.particleNum = DRAWING_TEX.particleNum * 2;
-//     DRAWING_TEX.updateParticles();
-//     FORCE_TEX.randomForce();
-//     PARTICLE_TEX.forceTexture = FORCE_TEX.texture;
-//     PARTICLE_TEX.particleNum = DRAWING_TEX.particleNum;
-//     PARTICLE_TEX.particleDivitionFlag = 1;
-//     const interval = 1000;
-//     NEXT_MILLIS += interval;
-//     changedFlag = true;
-//   }
-//
-//   PARTICLE_TEX.render();
-//   DRAWING_TEX.particleTexture = PARTICLE_TEX.texture;
-//   DRAWING_TEX.render();
-//   PARTICLE_TEX.update();
-//
-//   if (changedFlag) {
-//     FORCE_TEX.zeroForce();
-//     PARTICLE_TEX.forceTexture = FORCE_TEX.texture;
-//     PARTICLE_TEX.particleDivitionFlag = 0;
-//   }
-//   RENDERER.render(SCENE, CAMERA);
-//   requestAnimationFrame(draw);
-// }
