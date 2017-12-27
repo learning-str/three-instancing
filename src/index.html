@@ -1,0 +1,188 @@
+<!--
+  Takram Confidential
+
+  Copyright (C) 2017-Present Satoru Osawa
+
+  All information contained herein is, and remains the property of Takram.
+  The intellectual and technical concepts contained herein are proprietary to
+  Takram and may be covered by Japan and Foreign Patents, patents in process,
+  and are protected by trade secret or copyright law. Dissemination of this
+  information or reproduction of this material is strictly forbidden unless
+  prior written permission is obtained from Takram. Access to the source code
+  contained herein is hereby forbidden to anyone except current Takram
+  employees, managers or contractors who have executed Confidentiality and
+  Non-disclosure agreements explicitly covering such access.
+
+  The copyright notice above does not evidence any actual or intended
+  publication or disclosure of this source code, which includes information
+  that is confidential and/or proprietary, and is a trade secret, of Takram.
+  Any reproduction, modification, distribution, public performance, or public
+  display of or through use of this source code without the express written
+  consent of Takram is strictly prohibited, and in violation of applicable
+  laws and international treaties. The receipt or possession of this source
+  code and/or related information does not convey or imply any rights to
+  reproduce, disclose or distribute its contents, or to manufacture, use, or
+  sell anything that it may describe, in whole or in part.
+ -->
+
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>flow</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="shortcut icon" href="">
+
+  <script id="particle-tex-vs" type="x-shader/x-vertex">
+  	void main(void)	{
+      gl_Position = vec4(position, 1.0);
+  	}
+  </script>
+
+  <script id="particle-tex-fs" type="x-shader/x-fragment">
+    precision mediump float;
+    uniform sampler2D forceTexture;
+    uniform float forceTextureSize;
+    uniform sampler2D particleTexture;
+    uniform float particleTextureSize;
+    uniform float particleNum;
+    uniform int particleDivitionFlag;
+    float friction = 0.05;
+
+    float remap(float value, float fromLow, float fromHigh, float toLow, float toHigh) {
+      float slope = (toHigh - toLow) / (fromHigh - fromLow);
+      return toLow + slope * (value - fromLow);
+    }
+
+    vec4 bounceOfWalls(vec2 position, vec2 velocity) {
+      float xmin = -1.0;
+      float xmax = 1.0;
+      float ymin = -1.0;
+      float ymax = 1.0;
+
+      float posX = position.x;
+      float posY = position.y;
+      float velX = velocity.x;
+      float velY = velocity.y;
+
+      float cor_ = 1.0;
+      if (posX < xmin) {
+        posX = xmin + (xmin - posX);
+        velX *= -cor_;
+        velY *= cor_;
+      } else if (posX > xmax) {
+        posX = xmax - (posX - xmax);
+        velX *= -cor_;
+        velY *= cor_;
+      }
+      if (posY < ymin) {
+        posY = ymin + (ymin - posY);
+        velX *= cor_;
+        velY *= -cor_;
+      } else if (posY > ymax) {
+        posY = ymax - (posY - ymax);
+        velX *= cor_;
+        velY *= -cor_;
+      }
+      return vec4(posX, posY, velX, velY);
+    }
+
+    vec4 throughOfWalls(vec2 position, vec2 velocity) {
+      float xmin = -1.0;
+      float xmax = 1.0;
+      float ymin = -1.0;
+      float ymax = 1.0;
+
+      float posX = position.x;
+      float posY = position.y;
+      float velX = velocity.x;
+      float velY = velocity.y;
+
+      float cor_ = 1.0;
+      if (posX < xmin) {
+        posX = xmax - (xmin - posX);
+        velX *= cor_;
+        velY *= cor_;
+      } else if (posX > xmax) {
+        posX = xmin + (posX - xmax);
+        velX *= cor_;
+        velY *= cor_;
+      }
+      if (posY < ymin) {
+        posY = ymax - (ymin - posY);
+        velX *= cor_;
+        velY *= cor_;
+      } else if (posY > ymax) {
+        posY = ymin + (posY - ymax);
+        velX *= cor_;
+        velY *= cor_;
+      }
+      return vec4(posX, posY, velX, velY);
+    }
+
+    float getParticleId() {
+      return (gl_FragCoord.x - 0.5) + (gl_FragCoord.y - 0.5) * particleTextureSize;
+    }
+
+    vec2 getIndexCoord(float idx, float texSize) {
+      return vec2((mod(idx, texSize) + 0.5) / texSize,
+                  (floor(idx / texSize) + 0.5) / texSize);
+    }
+
+    vec2 getHalfIdCoord() {
+          float id = getParticleId();
+          id -= particleNum * 0.5;
+          return getIndexCoord(id, particleTextureSize);
+        }
+
+  	void main(void)	{
+      vec4 particleData = texture2D(particleTexture,
+                               gl_FragCoord.xy / particleTextureSize);
+      if (getParticleId() < particleNum) {
+        // divition
+        if (particleDivitionFlag == 1 && particleData.x == -2.0) {
+          particleData = texture2D(particleTexture, getHalfIdCoord());
+        }
+        vec2 position = particleData.xy;
+        vec2 velocity = particleData.zw;
+        vec2 force = vec2(0.0, 0.0);
+
+        // update force
+        force += texture2D(forceTexture, gl_FragCoord.xy / forceTextureSize).xy;
+        force -= velocity * friction;
+        velocity += force;
+        position += velocity;
+        vec4 cal_data = bounceOfWalls(position, velocity);
+        gl_FragColor = vec4(cal_data);
+      } else {
+        gl_FragColor = particleData;
+      }
+  	}
+  </script>
+
+  <script id="drawing-tex-vs" type="x-shader/x-vertex">
+    void main(void)	{
+      // gl_Position = vec4(position, 1.0);
+      gl_Position = vec4(0.002, 0.0, 0.0, 1.0);
+      gl_PointSize = 1.0;
+  	}
+  </script>
+
+  <script id="drawing-tex-fs" type="x-shader/x-fragment">
+    precision mediump float;
+
+  	void main(void)	{
+      gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+  	}
+  </script>
+
+<script src="jslib/three.min.js"></script>
+</head>
+
+<body>
+
+  <script src="js/main.js"></script>
+</body>
+
+</html>
