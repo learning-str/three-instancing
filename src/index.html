@@ -34,18 +34,36 @@
   <link rel="stylesheet" href="css/main.css">
   <link rel="shortcut icon" href="">
 
-  <script id="particle-tex-vs" type="x-shader/x-vertex">
+  <script id="particle-vs" type="x-shader/x-vertex">
     void main(void)	{
       gl_Position = vec4(position, 1.0);
       gl_PointSize = 100.0;
   	}
   </script>
 
-  <script id="particle-tex-fs" type="x-shader/x-fragment">
+  <script id="particle-fs" type="x-shader/x-fragment">
     precision mediump float;
 
   	void main(void)	{
-      gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+      gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+  	}
+  </script>
+
+  <script id="mask-vs" type="x-shader/x-vertex">
+    void main(void)	{
+      gl_Position = vec4(position, 1.0);
+  	}
+  </script>
+
+  <script id="mask-fs" type="x-shader/x-fragment">
+    uniform sampler2D imgTexture;
+    uniform sampler2D maskTexture;
+    uniform float textureSize;
+
+  	void main(void)	{
+      vec4 imgColor = texture2D(imgTexture, (floor(gl_FragCoord.xy) + 0.5) / textureSize);
+      vec4 maskColor = texture2D(maskTexture, (floor(gl_FragCoord.xy) + 0.5) / textureSize);
+      gl_FragColor = vec4(vec3(1.0 - imgColor.a), maskColor.r);
   	}
   </script>
 

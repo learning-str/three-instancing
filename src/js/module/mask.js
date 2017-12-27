@@ -25,11 +25,14 @@
 //  sell anything that it may describe, in whole or in part.
 //
 
-export default class ParticleTex {
-  constructor(size) {
+export default class Mask {
+  constructor(size, imgClass, maskClass) {
+    this.imgClass_ = imgClass;
+    this.maskClass_ = maskClass;
     this.size_ = size;
     this.bufCamera_ = new THREE.Camera();
     this.bufScene_ = new THREE.Scene();
+    this.shaderMaterial_;
     this.renderTarget_ = new THREE.WebGLRenderTarget(size.width, size.height,
       {
         minFilter: THREE.NearestFilter,
@@ -38,31 +41,46 @@ export default class ParticleTex {
   }
 
   setup() {
-    const geometry = new THREE.BufferGeometry();
-    const verticesBase = [];
-    var numVert = 10;
-    for (let i = 0; i < numVert; i++) {
-      const x = -1 + i * 0.2;
-      const y = 0;
-      const z = 0;
-      verticesBase.push(x, y, z);
+    const pixels = new Uint8Array(this.size_.width * this.size_.height * 4);
+    for (let i = 0; i < this.size_.width * this.size_.height * 4; i++) {
+      pixels[i] = 1.0;
     }
-    const vertices = new Float32Array(verticesBase);
-    geometry.addAttribute('position', new THREE.BufferAttribute(vertices, 3));
-    const material = new THREE.ShaderMaterial({
+    const texture = new THREE.DataTexture(pixels,
+                                          this.size_.width, this.size_.height,
+                                          THREE.RGBAFormat,
+                                          THREE.UnsignedByteType);
+    texture.needsUpdate = true;
+
+    const uniforms = {
+      imgTexture: {type: "t", value: texture},
+      maskTexture: {type: "t", value: texture},
+      textureSize: {type: "f", value: this.size_.width}
+    };
+    this.shaderMaterial_ = new THREE.ShaderMaterial({
       transparent:true,
       blending:THREE.NormalBlending,
-      vertexShader: document.getElementById('particle-vs').textContent,
-      fragmentShader: document.getElementById('particle-fs').textContent
+      uniforms: uniforms,
+      vertexShader: document.getElementById('mask-vs').textContent,
+      fragmentShader: document.getElementById('mask-fs').textContent
     });
-
-    const points = new THREE.Points(geometry, material);
-    points.matrixAutoUpdate  = true;
-    this.bufScene_.add(points);
+    const geometry = new THREE.PlaneGeometry(this.size_.width, this.size_.height);
+    const mesh = new THREE.Mesh(geometry, this.shaderMaterial_);
+    this.bufScene_.add(mesh);
+    console.log("done");
   }
 
   render(renderer) {
+    this.imgTexture = this.imgClass_.texture;
+    this.maskTexture = this.maskClass_.texture;
     renderer.render(this.bufScene_, this.bufCamera_, this.renderTarget_);
+  }
+
+  set imgTexture(value) {
+    this.shaderMaterial_.uniforms.imgTexture.value = value;
+  }
+
+  set maskTexture(value) {
+    this.shaderMaterial_.uniforms.maskTexture.value = value;
   }
 
   get texture() {

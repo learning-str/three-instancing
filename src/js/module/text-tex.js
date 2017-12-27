@@ -47,21 +47,16 @@ export default class TextTex {
 
 
     const img = new Image();
-    img.src = './data/test_7.svg';
-    // console.log("tex update! --- " + img.src);
+    img.src = './data/test_9.svg';
     img.onload = () => {
-      console.log(this.canvas_.width);
       const ctx = this.canvas_.getContext('2d');
-      // ctx.clearRect(0, 0, this.canvas_.width, this.canvas_.height);
       ctx.drawImage(img, 0, 0, this.canvas_.width, this.canvas_.height);
       this.texture_ = new THREE.Texture(this.canvas_);
       this.texture_.needsUpdate = true;
-      // console.log("update sentence tex!" + this.sentenceIndex_);
     }
   }
 
   get texture() {
-    console.log(this.texture_);
     return this.texture_;
   }
 }

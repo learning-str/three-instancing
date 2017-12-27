@@ -27,17 +27,19 @@
 
 import ParticleTex from './module/particle-tex.js';
 import TextTex from './module/text-tex.js';
+import Mask from './module/mask.js';
 
 const SIZE = {width: window.innerWidth,
               height: window.innerWidth}
 
 const RENDERER = new THREE.WebGLRenderer();
 RENDERER.setSize(SIZE.width, SIZE.height);
-RENDERER.setClearColor(0xe5e5e5, 1.0);
+RENDERER.setClearColor(0xffffff, 1.0);
 document.body.appendChild(RENDERER.domElement);
 
 const PARTICLE_TEX = new ParticleTex(SIZE);
 const TEXT_TEX = new TextTex(SIZE);
+const MASK = new Mask(SIZE, TEXT_TEX, PARTICLE_TEX);
 
 const SCENE = new THREE.Scene();
 const CAMERA = new THREE.Camera();
@@ -49,8 +51,10 @@ setTimeout(function() {draw()} ,300);
 function setup() {
   PARTICLE_TEX.setup();
   TEXT_TEX.setup();
+  MASK.setup();
   const geometry = new THREE.PlaneGeometry(2, 2);
-  MATERIAL.map = PARTICLE_TEX.texture;
+  // MATERIAL.map = PARTICLE_TEX.texture;
+  MATERIAL.map = MASK.texture;
   const mesh = new THREE.Mesh(geometry, MATERIAL);
   SCENE.add(mesh);
 }
@@ -58,6 +62,7 @@ function setup() {
 function draw() {
   // MATERIAL.map = TEXT_TEX.texture;
   PARTICLE_TEX.render(RENDERER);
+  MASK.render(RENDERER);
   RENDERER.render(SCENE, CAMERA);
   requestAnimationFrame(draw);
 }
