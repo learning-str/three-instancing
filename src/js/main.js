@@ -34,7 +34,7 @@ const SIZE = {width: window.innerWidth,
 
 const RENDERER = new THREE.WebGLRenderer();
 RENDERER.setSize(SIZE.width, SIZE.height);
-RENDERER.setClearColor(0xffffff, 1.0);
+RENDERER.setClearColor(0x000000, 1.0);
 document.body.appendChild(RENDERER.domElement);
 
 const PARTICLE_TEX = new ParticleTex(SIZE);

@@ -29,31 +29,27 @@ export default class TextTex {
   constructor(size) {
     this.size_ = size;
     this.canvas_ = document.createElement("canvas");
-    document.body.appendChild(this.canvas_);
+    // document.body.appendChild(this.canvas_);
     this.canvas_.width = size.width;
   	this.canvas_.height = size.height;
     this.texture_;
   }
 
   setup() {
-    // const ctx = this.canvas_.getContext("2d");
-    // ctx.fillStyle = "white";
-    // ctx.fillStyle = "black";
-    // ctx.font = "50px 'Hiragino Mincho ProN'";
-    // ctx.fillText("「私の中には第二次世界大戦が", 150, 450);
-    // ctx.fillText("入っているの」", 550, 550);
-    // this.texture_ = new THREE.Texture(this.canvas_);
-    // this.texture_.needsUpdate = true;
+    var loader = new THREE.TextureLoader();
+    loader.load("/data/test_9.png", (texture) => {
+        this.texture_ = texture;
+        console.log("done");
+    });
 
-
-    const img = new Image();
-    img.src = './data/test_9.svg';
-    img.onload = () => {
-      const ctx = this.canvas_.getContext('2d');
-      ctx.drawImage(img, 0, 0, this.canvas_.width, this.canvas_.height);
-      this.texture_ = new THREE.Texture(this.canvas_);
-      this.texture_.needsUpdate = true;
-    }
+    // const img = new Image();
+    // img.src = './data/test_9.svg';
+    // img.onload = () => {
+    //   const ctx = this.canvas_.getContext('2d');
+    //   ctx.drawImage(img, 0, 0, this.canvas_.width, this.canvas_.height);
+    //   this.texture_ = new THREE.Texture(this.canvas_);
+    //   this.texture_.needsUpdate = true;
+    // }
   }
 
   get texture() {

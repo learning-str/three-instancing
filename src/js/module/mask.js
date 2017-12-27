@@ -66,7 +66,6 @@ export default class Mask {
     const geometry = new THREE.PlaneGeometry(this.size_.width, this.size_.height);
     const mesh = new THREE.Mesh(geometry, this.shaderMaterial_);
     this.bufScene_.add(mesh);
-    console.log("done");
   }
 
   render(renderer) {
