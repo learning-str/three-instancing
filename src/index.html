@@ -34,15 +34,14 @@
   <link rel="stylesheet" href="css/main.css">
   <link rel="shortcut icon" href="">
 
-  <script id="drawing-tex-vs" type="x-shader/x-vertex">
+  <script id="particle-tex-vs" type="x-shader/x-vertex">
     void main(void)	{
-      // gl_Position = vec4(position, 1.0);
-      gl_Position = vec4(0.0, 0.0, 0.0, 1.0);
-      gl_PointSize = 1.0;
+      gl_Position = vec4(position, 1.0);
+      gl_PointSize = 100.0;
   	}
   </script>
 
-  <script id="drawing-tex-fs" type="x-shader/x-fragment">
+  <script id="particle-tex-fs" type="x-shader/x-fragment">
     precision mediump float;
 
   	void main(void)	{

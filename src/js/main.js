@@ -48,11 +48,9 @@ setTimeout(function() {draw()} ,300);
 
 function setup() {
   PARTICLE_TEX.setup();
-  // TEXT_TEX.setup();
-  const geometry = new THREE.PlaneGeometry(SIZE.width, SIZE.height);
-  // const material = new THREE.MeshBasicMaterial({map: PARTICLE_TEX.texture});
+  TEXT_TEX.setup();
+  const geometry = new THREE.PlaneGeometry(2, 2);
   MATERIAL.map = PARTICLE_TEX.texture;
-
   const mesh = new THREE.Mesh(geometry, MATERIAL);
   SCENE.add(mesh);
 }
