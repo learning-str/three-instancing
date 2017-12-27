@@ -37,13 +37,12 @@ export default class TextTex {
 
   setup() {
     var loader = new THREE.TextureLoader();
-    loader.load("/data/test_9.png", (texture) => {
+    loader.load("/data/test_9w.png", (texture) => {
         this.texture_ = texture;
-        console.log("done");
     });
 
     // const img = new Image();
-    // img.src = './data/test_9.svg';
+    // img.src = './data/test_8.svg';
     // img.onload = () => {
     //   const ctx = this.canvas_.getContext('2d');
     //   ctx.drawImage(img, 0, 0, this.canvas_.width, this.canvas_.height);

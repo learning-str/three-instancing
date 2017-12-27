@@ -28,11 +28,34 @@
 import babel from 'rollup-plugin-babel'
 import commonjs from 'rollup-plugin-commonjs'
 import nodeResolve from 'rollup-plugin-node-resolve'
+const path = require('path')
+const glslify = require('glslify')
+
+function glsl() {
+  return {
+    transform(code, id) {
+      if (!id.endsWith('.glsl')) {
+        return null
+      }
+      const body = JSON.stringify(
+        glslify.compile(code, { basedir: path.dirname(id) })
+          .replace(/[ \t]*\/\/.*\n/g, '')
+          .replace(/[ \t]*\/\*[\s\S]*?\*\//g, '')
+          .replace(/\n{2,}/g, '\n'))
+      const transformedCode = `export default ${body};`
+      return {
+        code: transformedCode,
+        map: { mappings: '' },
+      }
+    },
+  }
+}
 
 export default {
   entry: './src/js/main.js',
   sourceMap: true,
   plugins: [
+    glsl(),
     nodeResolve({ main: true, module: true, browser: true }),
     commonjs(),
     babel(),

@@ -34,20 +34,25 @@
   <link rel="stylesheet" href="css/main.css">
   <link rel="shortcut icon" href="">
 
-  <script id="particle-vs" type="x-shader/x-vertex">
-    void main(void)	{
-      gl_Position = vec4(position, 1.0);
-      gl_PointSize = 300.0;
-  	}
-  </script>
+  <!-- <script id="particle-vs" type="x-shader/x-vertex">
+    // attribute vec4 color;
+    // varying vec4 varying_color;
+    // void main(void)	{
+    //   gl_Position = vec4(position, 1.0);
+    //   gl_PointSize = 180.0;
+    //   varying_color = color;
+  	// }
+  </script> -->
 
-  <script id="particle-fs" type="x-shader/x-fragment">
-    precision mediump float;
-
-  	void main(void)	{
-      gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
-  	}
-  </script>
+  <!-- <script id="particle-fs" type="x-shader/x-fragment">
+    // precision mediump float;
+    //
+    // varying vec4 varying_color;
+  	// void main(void)	{
+    //   // gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+    //   gl_FragColor = varying_color;
+  	// }
+  </script> -->
 
   <script id="mask-vs" type="x-shader/x-vertex">
     void main(void)	{
@@ -63,7 +68,8 @@
   	void main(void)	{
       vec4 imgColor = texture2D(imgTexture, (floor(gl_FragCoord.xy) + 0.5) / textureSize);
       vec4 maskColor = texture2D(maskTexture, (floor(gl_FragCoord.xy) + 0.5) / textureSize);
-      gl_FragColor = vec4(vec3(1.0 - imgColor.a), maskColor.r);
+      // gl_FragColor = imgColor;
+      gl_FragColor = vec4(vec3(imgColor.a), maskColor.r);
   	}
   </script>
 

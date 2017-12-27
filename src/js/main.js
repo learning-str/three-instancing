@@ -29,8 +29,10 @@ import ParticleTex from './module/particle-tex.js';
 import TextTex from './module/text-tex.js';
 import Mask from './module/mask.js';
 
-const SIZE = {width: window.innerWidth,
-              height: window.innerWidth}
+// const SIZE = {width: window.innerWidth,
+//               height: window.innerWidth}
+const SIZE = {width: 768,
+             height: 768}
 
 const RENDERER = new THREE.WebGLRenderer();
 RENDERER.setSize(SIZE.width, SIZE.height);

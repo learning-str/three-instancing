@@ -25,6 +25,10 @@
 //  sell anything that it may describe, in whole or in part.
 //
 
+import template from 'es6-template-strings'
+import vertexShader from '../../shader/vert.glsl';
+import fragmentShader from '../../shader/frag.glsl';
+
 export default class ParticleTex {
   constructor(size) {
     this.size_ = size;
@@ -40,20 +44,39 @@ export default class ParticleTex {
   setup() {
     const geometry = new THREE.BufferGeometry();
     const verticesBase = [];
+    const colorsBase = [];
     var numVert = 10;
     for (let i = 0; i < numVert; i++) {
       const x = -1 + i * 0.2;
-      const y = 0;
+      const y = 0.3;
       const z = 0;
       verticesBase.push(x, y, z);
+      const r = 0.5;
+      const g = 0.5;
+      const b = 0.5;
+      const a = 1;
+      colorsBase.push(r, g, b, a);
+    }
+    for (let i = 0; i < numVert; i++) {
+      const x = -1 + i * 0.2;
+      const y = -0.2;
+      const z = 0;
+      verticesBase.push(x, y, z);
+      const r = 1;
+      const g = 1;
+      const b = 1;
+      const a = 1;
+      colorsBase.push(r, g, b, a);
     }
     const vertices = new Float32Array(verticesBase);
     geometry.addAttribute('position', new THREE.BufferAttribute(vertices, 3));
+    const colors = new Float32Array(colorsBase);
+    geometry.addAttribute('color', new THREE.BufferAttribute(colors, 4));
     const material = new THREE.ShaderMaterial({
       transparent:true,
       blending:THREE.NormalBlending,
-      vertexShader: document.getElementById('particle-vs').textContent,
-      fragmentShader: document.getElementById('particle-fs').textContent
+      vertexShader: template(vertexShader),
+      fragmentShader: template(fragmentShader)
     });
 
     const points = new THREE.Points(geometry, material);

@@ -53,7 +53,6 @@ gulp.task('browser-sync', () => {
 })
 
 // Build
-
 gulp.task('build:html', () => {
   return gulp.src([
     './src/index.html',
@@ -137,6 +136,7 @@ gulp.task('watch', () => {
   gulp.watch('./src/js/**/*', ['build:js-watch'])
   gulp.watch('./src/css/**/*', ['build:css'])
   gulp.watch('./src/asset/**/*', ['build:asset'])
+  gulp.watch('./src/shader/**/*', ['build:js-watch'])
 })
 
 // Tasks
